@@ -39,6 +39,19 @@ pipeline {
 		}
 	}
 	
+	post{ // post means after all the stages have been executed what should happen
+		always{ //whether success or fail
+			echo "i am awesome"
+		}
+
+		success{ //only on success
+		echo "i run when you are succesful"
+		}
+
+		failure{//on failure
+			echo "i run when you fail"
+		}
+	}
 	
 }
 
