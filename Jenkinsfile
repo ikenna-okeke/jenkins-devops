@@ -14,11 +14,31 @@
 // 	}
 // }
 
-node {
-	 
-	echo "Build"
-	echo "Test"
-	echo "integration"
+
+//DECLARATIVE APPROACH
+//agent is where your pipeline will run, it is similar to node but gives you a lot of flexibility
+pipeline {
+	agent any
+	
+	stages{
+		stage ("Build"){
+			steps{
+				echo "Build"
+
+			}
+		}
+
+		stage("Test"){
+			steps{
+				echo "Test"
+			}
+		}
+
+		stage("Integration"){
+			echo "Integration"
+		}
+	}
+	
 	
 }
 
