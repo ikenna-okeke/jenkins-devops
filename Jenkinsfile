@@ -1,5 +1,5 @@
 
-// This method is Called a SCRIPTED PIPELINE 
+// SCRIPTED PIPELINE 
 //a node refers to the machine where you run your pipeline, and a pipeline can be divided into different stages
 //
 // node {
@@ -18,8 +18,9 @@
 //DECLARATIVE APPROACH
 //agent is where your pipeline will run, it is similar to node but gives you a lot of flexibility
 pipeline {
-	agent any
+	//agent any
 	
+	agent {docker{image "maven:3.6.3"}}
 	stages{
 		stage ("Build"){
 			steps{
@@ -47,13 +48,19 @@ pipeline {
 		}
 
 		success{ //only on success
-		echo "i run when you are succesful"
+			echo "i run when you are succesful"
 		}
 
 		failure{//on failure
 			echo "i run when you fail"
 		}
+
+		changed{ //for example executes when the pipeline status changes from failure to sucess or sucess to failure
+			echo "I changed now haha"
+		}
 	}
+
+	
 	
 }
 
