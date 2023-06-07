@@ -18,13 +18,19 @@
 //DECLARATIVE APPROACH
 //agent is where your pipeline will run, it is similar to node but gives you a lot of flexibility
 pipeline {
-	//agent any
+	agent any
 	
-	agent {docker{image "maven:3.6.3"}}
+	// agent {docker{image "maven:3.6.3"}}
 	stages{
 		stage ("Build"){
 			steps{
+				//sh "mvn --version"
 				echo "Build"
+				echo "build path is $PATH"
+				echo "BUILD_NUMBER - $env.BUILD_NUMBER"
+				echo "build name is $env.JOB_NAME"
+				echo "build tag is $env.BUILD_TAG"
+				echo "build url is $env.BUILD_URL"
 
 			}
 		}
