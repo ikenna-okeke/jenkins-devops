@@ -30,7 +30,7 @@ pipeline {
 	stages{
 		stage ("Checkout"){
 			steps{
-				//sh "mvn --version"
+				sh "mvn --version"
 				sh "docker version"
 				echo "Build"
 				echo "build path is $PATH"
@@ -59,34 +59,34 @@ pipeline {
 			}
 		}
 
-		stage("Package"){
-			steps{
-				sh "mvm package -DskipTests" //to create a jar file
-			}
-		}
+	// 	stage("Package"){
+	// 		steps{
+	// 			sh "mvm package -DskipTests" //to create a jar file
+	// 		}
+	// 	}
 		
-		stage("Build docker image"){
-			steps{
-				//THIS IS  THE SCRIPTIVE/OLD APPROACH
-				//"docker build -t in28min/currency-exchange-devops:$env.BUILD_TAG"
+	// 	stage("Build docker image"){
+	// 		steps{
+	// 			//THIS IS  THE SCRIPTIVE/OLD APPROACH
+	// 			//"docker build -t in28min/currency-exchange-devops:$env.BUILD_TAG"
 
-				//THE NEW/DECLARATIVE APPROACH
-				script{
-					dockerImage=docker.build("gbambor/currency-exchange-devops:${env.BUILD_TAG}") //docker.build is used to build the docker image and the name dockerImagae is given to it to be able to referenceor call it somewhere else eg during the pushing
-				}
-			}
-		}
+	// 			//THE NEW/DECLARATIVE APPROACH
+	// 			script{
+	// 				dockerImage=docker.build("gbambor/currency-exchange-devops:${env.BUILD_TAG}") //docker.build is used to build the docker image and the name dockerImagae is given to it to be able to referenceor call it somewhere else eg during the pushing
+	// 			}
+	// 		}
+	// 	}
 
-		stage("Pushing Docker Image"){
-			steps{
-				script{
-					docker.WithRegistry("", "dockerhub") //to connect the credentials called dockerhub that we created in the jenkins ui to provide our username and password for docker hub
-					dockerImage.push()
-					dockerImage.push("latest")
-				}
-			}
-		}
-	}
+	// 	stage("Pushing Docker Image"){
+	// 		steps{
+	// 			script{
+	// 				docker.WithRegistry("", "dockerhub") //to connect the credentials called dockerhub that we created in the jenkins ui to provide our username and password for docker hub
+	// 				dockerImage.push()
+	// 				dockerImage.push("latest")
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 
 	
