@@ -22,13 +22,13 @@ pipeline {
 	
 	// agent {docker{image "maven:3.6.3"}}
 	environment{
-		dockerHome= tool "my-docker"
-		mavenHome= tool "my-maven"
-		PATH= "$dockeome/bin:$mavenHome/bin:$PATH"
+		dockerHome= tool "my-docker" //my-docker is the name we gave to the ddocker we added inside the jenkings tool
+		mavenHome= tool "my-maven"   //my-maven is the name we gave to the maven we added inside the jenkins tool
+		PATH= "$dockerHome/bin:$mavenHome/bin:$PATH" //we are taking the dockerHome and mavenHome bins and adding them to the jenkins path
 	}
 
 	stages{
-		stage ("Build"){
+		stage ("Initial Stage"){
 			steps{
 				//sh "mvn --version"
 				sh "docker version"
@@ -42,18 +42,53 @@ pipeline {
 			}
 		}
 
-		stage("Test"){
+		stage("Compile"){
 			steps{
-				echo "Test"
+				sh "mvn clean compile"  //similaar to npm install
 			}
 		}
 
-		stage("Integration"){
+		stage("Test"){
 			steps{
-				echo "Integration"
+				sh "mvm test"
+			}
+		}
+		stage("Integration Test"){
+			steps{
+				sh "mvm failsafe:integration-test failsafe:verify"
+			}
+		}
+
+		stage("Package "){
+			steps{
+				sh "mvm package -DskipTests" //to create a jar file
+			}
+		}
+		
+		stage("Build docker image"){
+			steps{
+				//THIS IS  THE SCRIPTIVE/OLD APPROACH
+				//"docker build -t in28min/currency-exchange-devops:$env.BUILD_TAG"
+
+				//THE NEW/DECLARATIVE APPROACH
+				script{
+					dockerImage=docker.build("gbambor/currency-exchange-devops:${env.BUILD_TAG}") //docker.build is used to build the docker image and the name dockerImagae is given to it to be able to referenceor call it somewhere else eg during the pushing
+				}
+			}
+		}
+
+		stage("Pushing Docker Image"){
+			steps{
+				script{
+					docker.WithRegistry("", "dockerhub") //to connect the credentials called dockerhub that we created in the jenkins ui to provide our username and password for docker hub
+					dockerImage.push()
+					dockerImage.push("latest")
+				}
 			}
 		}
 	}
+
+
 	
 	post{ // post means after all the stages have been executed what should happen
 		always{ //whether success or fail
