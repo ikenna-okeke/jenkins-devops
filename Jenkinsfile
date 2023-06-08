@@ -28,7 +28,7 @@ pipeline {
 	}
 
 	stages{
-		stage ("Initial Stage"){
+		stage ("Checkout"){
 			steps{
 				//sh "mvn --version"
 				sh "docker version"
@@ -59,7 +59,7 @@ pipeline {
 			}
 		}
 
-		stage("Package "){
+		stage("Package"){
 			steps{
 				sh "mvm package -DskipTests" //to create a jar file
 			}
